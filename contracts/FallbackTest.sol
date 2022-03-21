@@ -21,7 +21,7 @@ contract Fallback {
 }
 
 interface INotExistingContract {
-    function transfer() external payable;
+    function transferFrom() external payable;
 }
 
 interface IFallback {
@@ -39,14 +39,17 @@ contract FallbackGasTester {
 
     function test1() external payable{
         INotExistingContract _dest = INotExistingContract(dest);
-        _dest.transfer{value: 0.01 ether}();
+        _dest.transferFrom{value: 0.01 ether}();
     }
 
     function test2() external payable {
         uint _gasLeft = gasleft();
-        console.log("FallbackGasTester test2()", _gasLeft);
+        console.log("before test2()", _gasLeft);
 
         payable(dest).transfer(0.01 ether);
+
+        _gasLeft = gasleft();
+        console.log("after test2()", _gasLeft);
     }
 
     function test3() external payable{
