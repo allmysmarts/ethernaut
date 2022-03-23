@@ -3,6 +3,9 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 
+/**
+{fallback} has a 2300 gas limit when called by transfer or send.
+ */
 contract Fallback {
     event Log1(uint256 gas);
     event Log2(uint256 gas);
