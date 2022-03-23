@@ -9,18 +9,18 @@ contract Fallback {
 
     fallback() external payable {
         uint _gasLeft = gasleft();
-        console.log("gasleft() in fallback: ", _gasLeft);
+        console.log(">> gasleft() in fallback: ", _gasLeft);
         emit Log1(_gasLeft);
     }
 
     function existingMethod() external payable {
         uint _gasLeft = gasleft();
-        console.log("gasleft() in existingMethod: ", _gasLeft);
+        console.log(">> gasleft() in existingMethod: ", _gasLeft);
         emit Log2(_gasLeft);
     }
 }
 
-interface INotExistingContract {
+interface IUndefinedMethods {
     function transferFrom() external payable;
 }
 
@@ -38,22 +38,31 @@ contract FallbackGasTester {
     receive() external payable {}
 
     function test1() external payable{
-        INotExistingContract _dest = INotExistingContract(dest);
+        console.log("\nCheck calling of undefined method");
+        IUndefinedMethods _dest = IUndefinedMethods(dest);
         _dest.transferFrom{value: 0.01 ether}();
     }
 
     function test2() external payable {
+        console.log("\nCheck .transfer()");
         uint _gasLeft = gasleft();
-        console.log("before test2()", _gasLeft);
+        console.log("gasLeft before .transfer", _gasLeft);
 
         payable(dest).transfer(0.01 ether);
 
         _gasLeft = gasleft();
-        console.log("after test2()", _gasLeft);
+        console.log("gasLeft after .transfer", _gasLeft);
     }
 
-    function test3() external payable{
+    function test3() external payable {
+        console.log("\nCheck calling of defined method");
         IFallback _dest = IFallback(dest);
         _dest.existingMethod{value: 0.01 ether}();
+    }
+
+    function test4() external {
+        console.log("\nCheck calling of defined method, with specifying gas");
+        IFallback _dest = IFallback(dest);
+        _dest.existingMethod{gas: 4000}();
     }
 }

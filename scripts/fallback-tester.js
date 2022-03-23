@@ -24,6 +24,8 @@ async function main() {
     await fallbackGasTester.test3({
         value: ethers.utils.parseEther("0.1")
     });
+
+    await fallbackGasTester.test4();
 /*
     await run("verify:verify", {
         address: fallback.address,
